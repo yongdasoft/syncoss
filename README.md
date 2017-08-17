@@ -16,3 +16,19 @@
 ```
 2. 根目录下必有filedata 
 3. 可以参考 /ppms-client 的数据源.
+
+#### config.js 
+
+```js
+
+
+module.exports={
+	region: 'oss-cn-hangzhou',
+	accessKeyId: "xxxxxxx",
+    accessKeySecret:"xxxxxxxxxx",
+    bucket:"ydupgrade",
+    subdir:'ppms-client', 
+};
+
+
+```
