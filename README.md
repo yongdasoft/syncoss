@@ -16,6 +16,8 @@
 ```
 2. 根目录下必有filedata 
 3. 可以参考 /ppms-client 的数据源.
+4. 文件名区分大小写.
+
 
 #### config.js 
 
