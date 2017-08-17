@@ -9,6 +9,7 @@
   "author": "mrlong",
   "license": "ISC",
   "dependencies": {
-    "ali-oss": "^4.10.0"
+    "ali-oss": "^4.10.0",
+    "co": "^4.6.0"
   }
 }
