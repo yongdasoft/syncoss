@@ -7,7 +7,8 @@ var fs = require('fs');
 var client = new OSS({
   region: Config.region,
   accessKeyId: Config.accessKeyId,
-  accessKeySecret: Config.accessKeySecret
+  accessKeySecret: Config.accessKeySecret,
+  timeout: 60000*10000, // 60s
 });
 
 
