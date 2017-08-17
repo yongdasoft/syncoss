@@ -26,7 +26,7 @@ module.exports={
 	region: 'oss-cn-hangzhou',
 	accessKeyId: "xxxxxxx",
     accessKeySecret:"xxxxxxxxxx",
-    bucket:"ydupgrade",
+    bucket:"xxxxxxx",
     subdir:'ppms-client', 
 };
 
