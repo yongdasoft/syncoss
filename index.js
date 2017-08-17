@@ -12,9 +12,9 @@ var client = new OSS({
 
 
 co(function* () {
-  client.useBucket('ydupgrade');
+  client.useBucket(Config.bucket);
   var result = yield client.list({
-    prefix:'ppms-client'
+    prefix:Config.subdir
   });
   
 
@@ -35,9 +35,8 @@ co(function* () {
       if(params.length==4){
         var filename = __dirname + '/filedata/' + params[2];  
         console.log(filename);
-        var result = yield client.put('ppms-client/filedata/' + params[2],filename);
+        var result = yield client.put(Config.subdir + '/filedata/' + params[2],filename);
         if(result.res.status==200){
-          console.log(result);
           params[3] = result.res.headers.etag;   
           verjson.filedata[i] = params.join(',');
         }
