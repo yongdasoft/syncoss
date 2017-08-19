@@ -51,8 +51,9 @@ co(function* () {
     };
     
     //3.回写内容到ver.json 因为有md5码的更新,并上传
-    fs.writeFileSync(verfile, JSON.stringify(verjson));
-    yield client.put(Config.subdir + '/ver.json' ,verfile);
+    var newfile = __dirname + '/ver1.json';
+    fs.writeFileSync(newfile, JSON.stringify(verjson));
+    yield client.put(Config.subdir + '/ver.json' ,newfile);
   }
   else{
     console.log('没有找到ver.json文件');    
