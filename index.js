@@ -115,9 +115,10 @@ co(function* () {
               params[3] = result.res.headers.etag;   
               curfile = params.join(',');
               filedata.push(curfile);
+              cb(null);
             }
             else{
-             console.error("上传文件出错。" + filename);       
+             cb(new Error("上传文件出错。" + filename));       
             };
 
           };
