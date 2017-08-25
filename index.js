@@ -52,78 +52,83 @@ co(function* () {
       
       if(params.length==4){
         
-        var filename    = __dirname + '/filedata/' + params[2];  //本地的
-        var ossfilename = Config.subdir + '/filedata/' + params[2]; //oss的
-        var ossmd5 ;
-        co(function*(){
-          try{
-            var result = yield client.head(ossfilename);
-            ossmd5 = result.res.headers.etag.replace(/"/g,'');
+        if(params[0] == 'd' || params[0]=='D'){
+          cb(null);
+        }
+        else{
+          var filename    = __dirname + '/filedata/' + params[2];  //本地的
+          var ossfilename = Config.subdir + '/filedata/' + params[2]; //oss的
+          var ossmd5 ;
+          co(function*(){
+            try{
+              var result = yield client.head(ossfilename);
+              ossmd5 = result.res.headers.etag.replace(/"/g,'');
 
-            if(ossmd5){
-              var md5sum = crypto.createHash('md5');  
-              var stream = fs.createReadStream(filename);
-              stream.on('data', function(chunk){
-                md5sum.update(chunk);
-              });
-              stream.on('end', function() {
-                str = md5sum.digest('hex').toUpperCase();
-                if (str == ossmd5.toUpperCase()){
-                  console.log('不更新='+filename);
-                  params[3] = str;
+              if(ossmd5){
+                var md5sum = crypto.createHash('md5');  
+                var stream = fs.createReadStream(filename);
+                stream.on('data', function(chunk){
+                  md5sum.update(chunk);
+                });
+                stream.on('end', function() {
+                  str = md5sum.digest('hex').toUpperCase();
+                  if (str == ossmd5.toUpperCase()){
+                    console.log('不更新='+filename);
+                    params[3] = str;
+                    curfile = params.join(',');
+                    filedata.push(curfile);
+                    cb(null);
+                  }
+                  else{
+                    console.log('更新='+filename);
+                    co(function*() {
+                      var result = yield client.put(ossfilename,filename);
+                      if(result.res.statusCode==200){
+                        params[3] = result.res.headers.etag;   
+                        curfile = params.join(',');
+                        filedata.push(curfile);
+                        cb(null);
+                      }
+                      else{
+                        cb(new Error("上传文件出错。" + filename))
+                      };
+                    });//end co
+
+                  }; //end md5
+                }); //end stream
+
+              } else {
+                console.log('新增='+filename);
+                var result = yield client.put(ossfilename,filename);
+                if(result.res.status==200){
+                  params[3] = result.res.headers.etag;   
                   curfile = params.join(',');
                   filedata.push(curfile);
-                  cb(null);
+
                 }
                 else{
-                  console.log('更新='+filename);
-                  co(function*() {
-                    var result = yield client.put(ossfilename,filename);
-                    if(result.res.statusCode==200){
-                      params[3] = result.res.headers.etag;   
-                      curfile = params.join(',');
-                      filedata.push(curfile);
-                      cb(null);
-                    }
-                    else{
-                      cb(new Error("上传文件出错。" + filename))
-                    };
-                  });//end co
-                  
-                }; //end md5
-              }); //end stream
+                 console.error("上传文件出错。" + filename);       
+                };
+              };
 
-            } else {
+            } catch(err){
+
               console.log('新增='+filename);
               var result = yield client.put(ossfilename,filename);
               if(result.res.status==200){
                 params[3] = result.res.headers.etag;   
                 curfile = params.join(',');
                 filedata.push(curfile);
-                
+                cb(null);
               }
               else{
-               console.error("上传文件出错。" + filename);       
+               cb(new Error("上传文件出错。" + filename));       
               };
+
             };
 
-          } catch(err){
-
-            console.log('新增='+filename);
-            var result = yield client.put(ossfilename,filename);
-            if(result.res.status==200){
-              params[3] = result.res.headers.etag;   
-              curfile = params.join(',');
-              filedata.push(curfile);
-              cb(null);
-            }
-            else{
-             cb(new Error("上传文件出错。" + filename));       
-            };
-
-          };
-          
-        }); //end co
+          }); //end co
+        }//end U
         
       }else{
         cb(new Error("参数出错。"));
