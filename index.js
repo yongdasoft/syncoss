@@ -6,6 +6,7 @@
 //
 // 编号   作者     日期       内容:
 //  1   龙仕云   2017-8-21  只有变化的才处理
+//  2   龙仕云   2020-3-23  通信软件自己打包部署支持，增加version.ini的上传。
 //
 ////////////////////////////////////////////////////
 
@@ -44,6 +45,9 @@ co(function* () {
     var str = fs.readFileSync(verfile,"utf8");
     var verjson=JSON.parse(str);
         
+    //version.ini （如部分不需要的可以删除掉。）
+    yield client.put(Config.subdir + '/version.ini',__dirname +'/version.ini');
+  
     //for(var i=0,ii=verjson.filedata.length;i<ii;i++){
     var filedata=[];
     async.eachSeries(verjson.filedata,function(curfile,cb){  
